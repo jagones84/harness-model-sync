@@ -1,4 +1,4 @@
-"""harness-model-sync: one source of truth for model context windows, rendered per harness."""
+"""harness-model-sync: one source of truth for model limits, rendered per harness."""
 
 from importlib.metadata import PackageNotFoundError, version
 

@@ -1,5 +1,5 @@
 version: 1
-# Single source of truth for model context windows.
+# Single source of truth for model limits (context window and max output tokens).
 # contextWindow / maxOutput are tokens. Populate it with:
 #   harness-model-sync import --from openrouter
 #   harness-model-sync import --from llamacpp --base-url http://127.0.0.1:8080

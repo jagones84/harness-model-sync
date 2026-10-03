@@ -1,4 +1,4 @@
-"""Registry: the single source of truth (models + context windows)."""
+"""Registry: the single source of truth (models + their limits)."""
 
 from __future__ import annotations
 
@@ -96,7 +96,7 @@ def upsert_models(registry: Registry, models: list[Model]) -> Registry:
 
 
 REGISTRY_HEADER = (
-    "# Single source of truth for model context windows.\n"
+    "# Single source of truth for model limits (context window and max output tokens).\n"
     "# contextWindow / maxOutput are tokens. Populate it with:\n"
     "#   harness-model-sync import --from openrouter\n"
     "#   harness-model-sync import --from llamacpp --base-url http://127.0.0.1:8080\n"

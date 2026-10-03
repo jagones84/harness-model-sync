@@ -1,6 +1,7 @@
 # harness-model-sync
 
-One source of truth for **LLM model context windows**, rendered into each coding-harness config.
+One source of truth for **LLM model limits** (context window and max output), rendered into
+each coding-harness config.
 
 Coding harnesses store model limits in different formats (JSON with `limit`, JSON with
 `contextWindow`, TOML...). Instead of editing every file, keep one `registry.yaml` and let
@@ -9,7 +10,7 @@ this tool render the right one for each harness.
 ## Why
 
 A compaction threshold is only meaningful relative to the model's **real context window**.
-Declaring the window once removes drift between harnesses (opencode / pi / codex / openclaw).
+Declaring the limits once removes drift between harnesses (opencode / pi / codex / openclaw).
 
 ## Requirements
 
