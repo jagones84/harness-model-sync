@@ -3,6 +3,18 @@
 All notable changes to this project are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [0.1.1] - 2026-10-03
+
+### Changed
+- README: cross-platform install instructions (Windows PowerShell / macOS / Linux),
+  explicit Python `>= 3.11` requirement, `pip install git+...` and no-install run
+  examples, and the missing `openclaw` renderer row in the target table.
+
+### Verified
+- Test suite passes on Windows (Python 3.12): 17 passed.
+- All four renderers (opencode, pi, codex, openclaw) write the correct config on
+  Windows using a redirected `--home`.
+
 ## [0.1.0] - 2026-10-03
 
 ### Added

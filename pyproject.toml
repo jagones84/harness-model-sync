@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "harness-model-sync"
-version = "0.1.0"
+version = "0.1.1"
 description = "One source of truth for LLM model context windows, rendered into each coding-harness config."
 readme = "README.md"
 license = { text = "MIT" }
