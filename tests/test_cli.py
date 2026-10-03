@@ -43,3 +43,24 @@ def test_sync_writes_opencode_limit(tmp_path):
         "context": 1048576,
         "output": 131072,
     }
+
+
+def test_sync_backs_up_then_reports_up_to_date(tmp_path, capsys):
+    reg = tmp_path / "registry.yaml"
+    reg.write_text(REGISTRY)
+    home = _home(tmp_path)
+    target = home / ".config/opencode/opencode.json"
+
+    rc = main(["sync", "--registry", str(reg), "--home", str(home), "--renderer", "opencode"])
+
+    assert rc == 0
+    backups = list(target.parent.glob("opencode.json.bak-*"))
+    assert len(backups) == 1
+    assert json.loads(backups[0].read_text()) == {"provider": {}}
+
+    capsys.readouterr()
+    rc = main(["sync", "--registry", str(reg), "--home", str(home), "--renderer", "opencode"])
+
+    assert rc == 0
+    assert "up to date" in capsys.readouterr().out
+    assert len(list(target.parent.glob("opencode.json.bak-*"))) == 1
