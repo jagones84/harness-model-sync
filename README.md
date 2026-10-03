@@ -54,6 +54,22 @@ $env:PYTHONPATH = "src"; python -m harness_model_sync.cli sync --dry-run
 > `registry.yaml` is **not** shipped (it is gitignored). Copy `registry.example.yaml`
 > to `registry.yaml` and fill in your models.
 
+## Import (refresh from sources)
+
+Instead of hand-editing numbers, pull them from a live catalog. `import` merges the
+fetched models into the registry (keyed by `provider/id`), so you can run it once per
+source and it accumulates:
+
+```bash
+# OpenRouter (reads $OPENROUTER_API_KEY, or pass --api-key)
+harness-model-sync import --from openrouter
+
+# A local llama.cpp server (context read from the launch args)
+harness-model-sync import --from llamacpp --base-url http://127.0.0.1:8080 --provider llama-dgx
+```
+
+`--dry-run` previews; a real run backs the registry up to `registry.yaml.bak-<timestamp>`.
+
 ## Registry
 
 See `registry.example.yaml`:

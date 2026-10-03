@@ -3,6 +3,21 @@
 All notable changes to this project are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [0.2.0] - 2026-10-03
+
+### Added
+- `import` subcommand: refresh `registry.yaml` from a live catalog
+  (`import --from openrouter` or `import --from llamacpp --base-url ...`). It merges by
+  `provider/id`, so running it once per source accumulates. This wires the previously
+  unreachable `sources.py` parsers/fetchers into the CLI, making `registry.example.yaml`
+  accurate.
+- Test: end-to-end `sync` verifying the `*.bak-<timestamp>` backup and the `up to date`
+  no-op on a second run (18 tests total).
+
+### Fixed
+- `__version__` now derives from the installed package metadata instead of a hardcoded
+  string, so it can no longer drift from `pyproject.toml` (was `0.1.0` vs package `0.1.1`).
+
 ## [0.1.1] - 2026-10-03
 
 ### Changed
