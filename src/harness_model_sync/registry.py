@@ -81,3 +81,41 @@ def load_registry(path: str | Path) -> Registry:
         )
 
     return Registry(version=int(version), models=models)
+
+
+def upsert_models(registry: Registry, models: list[Model]) -> Registry:
+    """Merge ``models`` into ``registry`` keyed by ``provider/id``, keeping existing order."""
+    index = {model_key(m.provider, m.id): m for m in registry.models}
+    order = [model_key(m.provider, m.id) for m in registry.models]
+    for model in models:
+        key = model_key(model.provider, model.id)
+        if key not in index:
+            order.append(key)
+        index[key] = model
+    return Registry(version=registry.version, models=[index[key] for key in order])
+
+
+REGISTRY_HEADER = (
+    "# Single source of truth for model context windows.\n"
+    "# contextWindow / maxOutput are tokens. Populate it with:\n"
+    "#   harness-model-sync import --from openrouter\n"
+    "#   harness-model-sync import --from llamacpp --base-url http://127.0.0.1:8080\n"
+)
+
+
+def dump_registry(registry: Registry, header: str = REGISTRY_HEADER) -> str:
+    """Serialize a registry back to YAML (round-trips :func:`load_registry`)."""
+    entries: list[dict[str, Any]] = []
+    for m in registry.models:
+        entry: dict[str, Any] = {
+            "provider": m.provider,
+            "id": m.id,
+            "contextWindow": m.context_window,
+        }
+        if m.max_output is not None:
+            entry["maxOutput"] = m.max_output
+        if m.reserve is not None:
+            entry["reserve"] = m.reserve
+        entries.append(entry)
+    body = yaml.safe_dump({"version": registry.version, "models": entries}, sort_keys=False)
+    return header + body
