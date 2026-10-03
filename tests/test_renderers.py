@@ -52,3 +52,10 @@ def test_codex_renderer_writes_context_window_and_provider():
     assert "model_context_window = 1048576" in out
     assert 'model_provider = "openrouter"' in out
     assert 'wire_api = "responses"' in out
+
+
+def test_codex_renderer_preserves_existing_sections():
+    current = '[projects."/x"]\ntrust_level = "trusted"\n'
+    out = CodexRenderer(model="z-ai/glm-5.3-flash", provider="openrouter").render(MODELS, current)
+    assert "trusted" in out
+    assert "model_context_window = 1048576" in out

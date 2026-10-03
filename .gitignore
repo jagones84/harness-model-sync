@@ -6,3 +6,7 @@ dist/
 build/
 *.egg-info/
 .pytest_cache/
+
+# user-specific real registry (ship registry.example.yaml instead)
+registry.yaml
+registry.yaml.bak-*

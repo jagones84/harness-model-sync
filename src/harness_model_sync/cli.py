@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from .registry import load_registry
-from .renderers import CodexRenderer, OpencodeRenderer, PiRenderer, Renderer
+from .renderers import CodexRenderer, OpenclawRenderer, OpencodeRenderer, PiRenderer, Renderer
 
 DEFAULT_RENDERERS = ("opencode", "pi")
 
@@ -24,6 +24,8 @@ def _make_renderer(name: str, model: str | None, provider: str) -> Renderer:
         return OpencodeRenderer()
     if name == "pi":
         return PiRenderer()
+    if name == "openclaw":
+        return OpenclawRenderer()
     if name == "codex":
         if not model:
             raise SystemExit("--model is required for the codex renderer")

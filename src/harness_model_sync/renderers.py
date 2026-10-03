@@ -7,9 +7,12 @@ model limits in that harness's schema. The core stays harness-agnostic.
 from __future__ import annotations
 
 import json
+import tomllib
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
+
+import tomli_w
 
 from .registry import Model
 
@@ -99,15 +102,39 @@ class CodexRenderer:
         match = next((m for m in models if m.provider == self.provider and m.id == self.model), None)
         if match is None:
             raise ValueError(f"model {self.provider}/{self.model} not found in registry")
-        lines = [
-            f'model = "{self.model}"',
-            f'model_provider = "{self.provider}"',
-            f"model_context_window = {match.context_window}",
-            "",
-            f"[model_providers.{self.provider}]",
-            f'name = "{self.provider}"',
-            f'base_url = "{self.base_url}"',
-            f'env_key = "{self.env_key}"',
-            'wire_api = "responses"',
-        ]
-        return "\n".join(lines) + "\n"
+        # Merge, don't clobber: Codex writes its own sections (e.g. [projects.*])
+        # into config.toml, so keep whatever is already there.
+        data: dict[str, Any] = tomllib.loads(current) if current.strip() else {}
+        data["model"] = self.model
+        data["model_provider"] = self.provider
+        data["model_context_window"] = match.context_window
+        providers = data.setdefault("model_providers", {})
+        provider = providers.setdefault(self.provider, {})
+        provider["name"] = self.provider
+        provider["base_url"] = self.base_url
+        provider["env_key"] = self.env_key
+        provider["wire_api"] = "responses"
+        return tomli_w.dumps(data)
+
+
+@dataclass
+class OpenclawRenderer:
+    """~/.openclaw/openclaw.json -> models.providers.<p>.models[].contextWindow."""
+
+    name: str = "openclaw"
+    target: str = "~/.openclaw/openclaw.json"
+
+    def render(self, models: list[Model], current: str) -> str:
+        # Update-only: OpenClaw's catalog is curated (each provider carries its own
+        # baseUrl/apiKey). We never add providers or models, only fix the limits of
+        # entries that already exist.
+        data: Any = json.loads(current) if current.strip() else {}
+        providers = ((data.get("models") or {}).get("providers")) or {}
+        for m in models:
+            entries = ((providers.get(m.provider) or {}).get("models")) or []
+            for entry in entries:
+                if isinstance(entry, dict) and entry.get("id") in (m.id, f"{m.provider}/{m.id}"):
+                    entry["contextWindow"] = m.context_window
+                    if m.max_output is not None:
+                        entry["maxTokens"] = m.max_output
+        return json.dumps(data, indent=2) + "\n"
