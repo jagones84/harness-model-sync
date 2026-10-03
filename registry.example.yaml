@@ -1,0 +1,18 @@
+version: 1
+# Single source of truth for model context windows.
+# contextWindow / maxOutput are tokens. Populate it with:
+#   harness-model-sync import --from openrouter
+#   harness-model-sync import --from llamacpp --base-url http://127.0.0.1:8080
+models:
+  - provider: openrouter
+    id: z-ai/glm-5.3-flash
+    contextWindow: 1048576
+    maxOutput: 131072
+  - provider: openrouter
+    id: deepseek/deepseek-v4-flash
+    contextWindow: 1048576
+    maxOutput: 131072
+  - provider: llama-dgx
+    id: nex-n25-mini-uncensored-q8
+    contextWindow: 262144
+    maxOutput: 32768
