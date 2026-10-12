@@ -12,6 +12,14 @@ models:
     id: deepseek/deepseek-v4-flash
     contextWindow: 1048576
     maxOutput: 131072
+  - provider: openrouter
+    id: "~deepseek/deepseek-flash-latest"
+    contextWindow: 1048576
+    maxOutput: 393216
+  - provider: openrouter
+    id: "~deepseek/deepseek-pro-latest"
+    contextWindow: 1048576
+    maxOutput: 393216
   - provider: llama-dgx
     id: nex-n25-mini-uncensored-q8
     contextWindow: 262144
