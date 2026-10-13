@@ -13,6 +13,10 @@ models:
     contextWindow: 1048576
     maxOutput: 131072
   - provider: openrouter
+    id: deepseek/deepseek-v4.1-flash
+    contextWindow: 1048576
+    maxOutput: 393216
+  - provider: openrouter
     id: "~deepseek/deepseek-flash-latest"
     contextWindow: 1048576
     maxOutput: 393216
