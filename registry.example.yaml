@@ -3,6 +3,11 @@ version: 1
 # contextWindow / maxOutput are tokens. Populate it with:
 #   harness-model-sync import --from openrouter
 #   harness-model-sync import --from llamacpp --base-url http://127.0.0.1:8080
+#
+# Note: OpenRouter models ending in :batch (e.g. z-ai/glm-5.3-flash:batch,
+# deepseek/deepseek-v4.1-flash:batch) are batch-only — they only work via
+# /api/v1/batches, not /chat/completions. They are intentionally omitted from
+# this registry because no harness here uses them for synchronous chat.
 models:
   - provider: openrouter
     id: z-ai/glm-5.3-flash
@@ -27,4 +32,12 @@ models:
   - provider: llama-dgx
     id: nex-n25-mini-uncensored-q8
     contextWindow: 262144
+    maxOutput: 32768
+  # Local vLLM on DGX Spark (:8010), OpenAI-compatible multimodal chat
+  # completions (vision + text). Served-model-name = "/qwen3-vl-4b"
+  # (from vLLM /v1/models). Launcher: Programs/vLLM/scripts/02d_start_vllm_vl4b.sh
+  # (lean profile: gpu-mem 0.20, max-model-len 32768, --limit-mm-per-prompt image=4).
+  - provider: local-vllm-vl
+    id: /qwen3-vl-4b
+    contextWindow: 32768
     maxOutput: 32768
